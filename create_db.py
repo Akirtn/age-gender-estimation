@@ -50,6 +50,7 @@ def main():
     #img_name_file = np.genfromtxt('./megaage_asian/list/train_name.txt',dtype='str')
     gender_file =np.loadtxt('./megaage_asian/list/test_gender.txt')
     #gender_file =np.loadtxt('./megaage_asian/list/train_gender.txt')
+    #0 for female and 1 for male, NaN if unknow
     #full_path, dob, gender, photo_taken, face_score, second_face_score, age = get_meta(mat_path, db)
 
     out_genders = []
@@ -65,8 +66,7 @@ def main():
         # if ~(0 <= age[i] <= 100):
         #     continue
 
-        if np.isnan(gender[i]):
-            continue
+       
 
         # out_genders.append(int(gender[i]))
         # out_ages.append(age[i])
@@ -77,6 +77,9 @@ def main():
         #行（height） x 列（width） x 色（color）の三次元のndarray
         img_h, img_w, _ = np.shape(input_img)
         age = int(float(age_file[i]))
+        gender =int(gender_file[i])
+        if np.isnan(gender[i]):
+            continue
         if age >= -1:
 	        if isPlot:
 		        img_clip = ImageClip(input_img)
@@ -86,8 +89,8 @@ def main():
 	        input_img = cv2.resize(input_img,(img_size,img_size))
             #only add to the list when faces is detected
             out_imgs.append(input_img)       
-	        out_ages.append(age[i])
-            out_genders.append(int(gender[i]))
+	        out_ages.append(int(age))
+            out_genders.append(int(gender))
     output = {"image": np.array(out_imgs), "gender": np.array(out_genders), "age": np.array(out_ages),
               "db": db, "img_size": img_size, "min_score": min_score}
     scipy.io.savemat(output_path, output)
