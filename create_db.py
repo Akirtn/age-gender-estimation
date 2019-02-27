@@ -9,14 +9,15 @@ from os.path import isfile, join
 import sys
 import dlib
 from moviepy.editor import *
-
+#execute commmand for asia
+#python3 create_db.py --output data/asia.mat --db asia --img_size 64
 def get_args():
     parser = argparse.ArgumentParser(description="This script cleans-up noisy labels "
                                                  "and creates database for training.",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--output", "-o", type=str, required=True,
                         help="path to output database mat file")
-    parser.add_argument("--db", type=str, default="wiki",
+    parser.add_argument("--db", type=str, default="asia",
                         help="dataset; wiki or imdb or asia")
                         #I add asia version
     parser.add_argument("--img_size", type=int, default=64,
