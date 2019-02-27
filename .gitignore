@@ -105,3 +105,4 @@ ENV/
 /checkpoints/
 /pretrained_models/
 .DS_Store
+megaage_asian/
