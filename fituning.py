@@ -14,32 +14,32 @@ from random_eraser import get_random_eraser
 
 logging.basicConfig(level=logging.DEBUG)
 
-
-def get_args():
-    parser = argparse.ArgumentParser(description="This script trains the CNN model for age and gender estimation.",
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--input", "-i", type=str, required=True,default=('./asia.mat'),
-                        help="path to input database mat file")
-    parser.add_argument("--batch_size", type=int, default=32,
-                        help="batch size")
-    parser.add_argument("--nb_epochs", type=int, default=30,
-                        help="number of epochs")
-    parser.add_argument("--lr", type=float, default=0.1,
-                        help="initial learning rate")
-    parser.add_argument("--opt", type=str, default="sgd",
-                        help="optimizer name; 'sgd' or 'adam'")
-    parser.add_argument("--depth", type=int, default=16,
-                        help="depth of network (should be 10, 16, 22, 28, ...)")
-    parser.add_argument("--width", type=int, default=8,
-                        help="width of network")
-    parser.add_argument("--validation_split", type=float, default=0.1,
-                        help="validation split ratio")
-    parser.add_argument("--aug", action="store_true",
-                        help="use data augmentation if set true")
-    parser.add_argument("--output_path", type=str, default="checkpoints",
-                        help="checkpoint dir")
-    args = parser.parse_args()
-    return args
+#example python3 train.py --input data/imdb_db.mat
+# def get_args():
+#     parser = argparse.ArgumentParser(description="This script trains the CNN model for age and gender estimation.",
+#                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+#     parser.add_argument("--input", "-i", type=str, required=True,default=asia.mat,
+#                         help="path to input database mat file")
+#     parser.add_argument("--batch_size", type=int, default=32,
+#                         help="batch size")
+#     parser.add_argument("--nb_epochs", type=int, default=30,
+#                         help="number of epochs")
+#     parser.add_argument("--lr", type=float, default=0.1,
+#                         help="initial learning rate")
+#     parser.add_argument("--opt", type=str, default="sgd",
+#                         help="optimizer name; 'sgd' or 'adam'")
+#     parser.add_argument("--depth", type=int, default=16,
+#                         help="depth of network (should be 10, 16, 22, 28, ...)")
+#     parser.add_argument("--width", type=int, default=8,
+#                         help="width of network")
+#     parser.add_argument("--validation_split", type=float, default=0.1,
+#                         help="validation split ratio")
+#     parser.add_argument("--aug", action="store_true",
+#                         help="use data augmentation if set true")
+#     parser.add_argument("--output_path", type=str, default="checkpoints",
+#                         help="checkpoint dir")
+#     args = parser.parse_args()
+#     return args
 
 
 class Schedule:
@@ -67,17 +67,18 @@ def get_optimizer(opt_name, lr):
 
 
 def main():
-    args = get_args()
-    input_path = args.input
-    batch_size = args.batch_size
-    nb_epochs = args.nb_epochs
-    lr = args.lr
-    opt_name = args.opt
-    depth = args.depth
-    k = args.width
-    validation_split = args.validation_split
-    use_augmentation = args.aug
-    output_path = Path(__file__).resolve().parent.joinpath(args.output_path)
+    # args = get_args()
+    #example   output_path = './data/megaage_test'
+    input_path ='./asia.mat'
+    batch_size = 32
+    nb_epochs = 30
+    lr = 0.1
+    opt_name = "sgd"
+    depth = 16
+    k = 8
+    validation_split = 0.1
+    use_augmentation = "store_true"
+    output_path = Path(__file__).resolve().parent.joinpath("checkpoints")
     output_path.mkdir(parents=True, exist_ok=True)
 
     logging.debug("Loading data...")
@@ -86,7 +87,8 @@ def main():
     y_data_g = np_utils.to_categorical(gender, 2)
     y_data_a = np_utils.to_categorical(age, 101)
 
-    model = WideResNet(image_size, depth=depth, k=k)()
+    #model = WideResNet(image_size, depth=depth, k=k)()
+    model.load_weights('weights.28-3.73.hdf5')
     opt = get_optimizer(opt_name, lr)
     model.compile(optimizer=opt, loss=["categorical_crossentropy", "categorical_crossentropy"],
                   metrics=['accuracy'])
